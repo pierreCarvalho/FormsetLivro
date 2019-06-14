@@ -1,0 +1,104 @@
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% block content %}
+{% csrf_token %}
+{{ form.non_field_errors }}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>SmPy</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center text-uppercase text-success bg-dark">Cadastro de livros</h1>
+
+        <form class="form" role="form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-4 form-group mb-4">
+                    {% bootstrap_field form.nome %}
+                </div>
+                <div class="col-sm-4 form-group mb-4">
+                    {% bootstrap_field form.autor %}
+                </div>
+                <div class="col-sm-4 form-group mb-4">
+                    {% bootstrap_field form.autor_email %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 form-group mb-4">
+                    {% bootstrap_field form.editora %}
+                </div>
+                <div class="col-sm-4 form-group mb-4">
+                    {% bootstrap_field form.ano %}
+                </div>
+            </div>
+            <p class="text-center text-uppercase text-success bg-dark">Cadastrar Dependente</p>
+            <div id="formSetAnexo" class="ibox-body" aria-expanded="true">
+                {{ dependente_livro.management_form }}
+                {% for form in dependente_livro.forms %}
+
+                <div class="{% cycle row1 row2 row3 row4 %} row formset_dependente_row">
+
+                    {% for field in form.visible_fields %}
+
+                    {# Incluindo os campos hidden do form #}
+                    {% if forloop.first %}
+                    {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {% endif %}
+
+                    <div class="form-group col-sm-4">
+                        {% bootstrap_field field %}
+                        {{ field.errors.as_ul }}
+                    </div>
+
+                    {# Quando for a última volta do loop, inclui uma linha para separar o próximo form #}
+                    {% if forloop.last %}
+                    <div class="form-group col-sm-6">
+                        <hr>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="save btn btn-default">Salvar</button>
+            <a class="btn btn-primary" href="{% url 'livro:list' %}">Listar</a>
+        </form>
+    </div>
+    <!-- Optional JavaScript -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="{% static 'formSet/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+        $('.formset_dependente_row').formset({
+            addText: 'Adicionar Dependente',
+            deleteText: 'Remover Dependente',
+            prefix: 'dependente_set'
+        });
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+{% endblock %}
